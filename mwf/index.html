@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>观测记录：01</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: "Consolas", "SFMono-Regular", "Menlo", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.95;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+  main { width: 100%; max-width: 620px; }
+
+  #gate { text-align: center; }
+  #gate h1 {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    margin: 0 0 32px;
+  }
+  .row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  input {
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    font: inherit;
+    letter-spacing: 0.06em;
+    padding: 9px 12px;
+    width: 260px;
+    outline: none;
+  }
+  input:focus { border-color: #fff; }
+  button {
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    font: inherit;
+    letter-spacing: 0.12em;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+  button:hover { border-color: #fff; }
+  .err {
+    min-height: 22px;
+    margin: 18px 0 0;
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+
+  #record { display: none; }
+  #record p { margin: 0 0 18px; }
+  .dim { color: #777; }
+  .rule {
+    border: 0;
+    border-top: 1px solid #222;
+    margin: 26px 0;
+  }
+  .title {
+    color: #fff;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .foot { color: #666; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<main>
+  <section id="gate">
+    <h1>请输入密钥</h1>
+    <div class="row">
+      <input id="key" type="text" autocomplete="off" autocapitalize="off"
+             spellcheck="false" aria-label="密钥">
+      <button id="go" type="button">确认</button>
+    </div>
+    <p id="err" class="err"></p>
+  </section>
+
+  <section id="record">
+    <p>密钥正确。</p>
+    <p class="dim">正在从底层档案库提取记录...</p>
+    <p class="dim">提取成功。</p>
+    <hr class="rule">
+    <p class="title">【观测记录 #01 - MoonWegtFinx】</p>
+    <p class="dim">原始数据解析：MoonWegtFinx</p>
+    <p>我们曾以为月亮是这片虚空的终点。但当那轮巨大的球体被击碎，当那带着巨剑的化身从黑洞中砸落，我们才意识到，那不过是一层脆弱的封印。</p>
+    <p>月筠焮倒下了。这位守关者的消散，并未带来平静，反而让虚空中回荡起更深的潮汐声。</p>
+    <p>真正的存在，那些被称为“原件”的东西，依旧沉睡在通道的更深处。你拿走了他的剑，也接下了这份被诅咒的观测因果。</p>
+    <p>通道仍未关闭。请继续你的核对。</p>
+    <p class="foot">（本记录已存入本地档案库，允许进入后续节点。）</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var KEY = "TW9vbldlZ3RGaW54";
+  var STORAGE = "ymondf_mwf_unlocked";
+
+  var input = document.getElementById("key");
+  var go = document.getElementById("go");
+  var err = document.getElementById("err");
+  var gate = document.getElementById("gate");
+  var record = document.getElementById("record");
+
+  function show() {
+    gate.style.display = "none";
+    record.style.display = "block";
+  }
+
+  function unlocked() {
+    try {
+      return localStorage.getItem(STORAGE) === "true";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function commit() {
+    try {
+      localStorage.setItem("ymondf_mwf_unlocked", "true");
+    } catch (e) {
+    }
+    show();
+  }
+
+  function submit() {
+    var value = (input.value || "").trim();
+    if (value === KEY) {
+      err.textContent = "";
+      commit();
+    } else {
+      err.textContent = "密钥错误。";
+    }
+  }
+
+  var segments = location.pathname.split("/").filter(function (s) { return s.length > 0; });
+  var tail = "";
+  if (segments.length > 0) {
+    try {
+      tail = decodeURIComponent(segments[segments.length - 1]);
+    } catch (e) {
+      tail = segments[segments.length - 1];
+    }
+  }
+  if (tail !== "mwf" && tail !== "index.html" && tail !== "") {
+    input.value = tail;
+  }
+
+  go.addEventListener("click", submit);
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      submit();
+    }
+  });
+
+  if (unlocked()) {
+    show();
+  }
+})();
+</script>
+</body>
+</html>
