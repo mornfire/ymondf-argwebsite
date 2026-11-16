@@ -113,6 +113,13 @@
   var KEY = "TW9vbldlZ3RGaW54";
   var STORAGE = "ymondf_mwf_unlocked";
 
+  // 未知路径按目录分流：/wl/ 下的错误地址回到 02 记录的门口，
+  // 其余仍走 01 记录的门口，避免两个档案互相串。
+  if (location.pathname.indexOf("/wl/") === 0) {
+    location.replace("/wl/");
+    return;
+  }
+
   var input = document.getElementById("key");
   var go = document.getElementById("go");
   var err = document.getElementById("err");
